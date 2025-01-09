@@ -250,3 +250,7 @@ class WineListView(FilterView):
     def get_queryset(self):
         qs = super().get_queryset().order_by("pk")
         return qs.filter(user=self.request.user)
+
+
+class WineScanView(TemplateView):
+    template_name = "scan_wine.html"

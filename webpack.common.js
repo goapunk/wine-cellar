@@ -24,6 +24,11 @@ module.exports = {
       import: [
         './wine_cellar/assets/js/init_tom_select.ts'
       ],
+    },
+    barcode_scanner: {
+      import: [
+        './wine_cellar/react/react_bar_code.jsx'
+      ],
     }
   },
   output: {
