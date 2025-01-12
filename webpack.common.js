@@ -15,6 +15,7 @@ module.exports = {
         './wine_cellar/assets/css/styles.css',
         './wine_cellar/assets/css/page-layout.css',
         './wine_cellar/assets/css/homepage.css',
+        './wine_cellar/assets/css/scan.css',
         './node_modules/tom-select/dist/css/tom-select.css',
         './node_modules/@fortawesome/fontawesome-free/css/fontawesome.css',
         './node_modules/@fortawesome/fontawesome-free/css/solid.css',

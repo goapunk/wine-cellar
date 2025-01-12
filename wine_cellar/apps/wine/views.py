@@ -263,10 +263,30 @@ class WineScannedView(TemplateView):
         context = super().get_context_data(**kwargs)
         code = self.kwargs["code"]
         wine = Wine.objects.filter(barcode=code).first()
-        context.update(
-            {
-                "wine": wine,
-                "code": code
-            }
-        )
+        context.update({"wine": wine, "code": code})
+        return context
+
+
+class WineChangeStockView(TemplateView):
+    template_name = "change_stock.html"
+
+    def get(self, request, *args, **kwargs):
+        # op = 0 decrease stock
+        # op = 1 increaste stock
+        pk = self.kwargs["pk"]
+        operation = self.kwargs["op"]
+        wine = get_object_or_404(Wine, pk=pk)
+        if operation == 1:
+            wine.stock += 1
+        else:
+            wine.stock -= 1
+        wine.save()
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs["pk"]
+        op = self.kwargs["op"]
+        wine = get_object_or_404(Wine, pk=pk)
+        context.update({"wine": wine, "op": op})
         return context

@@ -9,10 +9,13 @@ from django.urls import include, path
 
 from wine_cellar.apps.wine.views import (
     HomePageView,
+    WineChangeStockView,
     WineCreateView,
     WineDetailView,
     WineListView,
-    WineUpdateView, WineScanView, WineScannedView
+    WineScannedView,
+    WineScanView,
+    WineUpdateView,
 )
 
 urlpatterns = [
@@ -24,6 +27,11 @@ urlpatterns = [
     path("wines/", WineListView.as_view(), name="wine-list"),
     path("wine/scan", WineScanView.as_view(), name="wine-scan"),
     path("wine/scan/<int:code>", WineScannedView.as_view(), name="wine-scan"),
+    path(
+        "wine/change_stock/<int:pk><int:op>",
+        WineChangeStockView.as_view(),
+        name="change-stock",
+    ),
     path("", HomePageView.as_view(), name="homepage"),
 ]
 
