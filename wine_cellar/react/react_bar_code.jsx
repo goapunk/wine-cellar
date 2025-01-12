@@ -5,15 +5,15 @@ import "react-barcode-scanner/polyfill"
 
 const Scanner = () => {
     const handleCapture = (captured) => {
-        console.log("capt")
-        console.log(captured)
+        if (captured.length > 1) {
+            window.href = "/wine/scan?code=" + captured[0]
+        }
     }
 
   return <BarcodeScanner onCapture={handleCapture} options={{ formats: ['ean_13', 'ean_8', "upc_a"] }} />
 }
 
 const init_scanner = () => {
-console.log(document.getElementById('scanner'))
 const root = createRoot(document.getElementById('scanner'));
 root.render(<Scanner />);
 }

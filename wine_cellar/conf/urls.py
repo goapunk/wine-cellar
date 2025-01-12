@@ -12,7 +12,7 @@ from wine_cellar.apps.wine.views import (
     WineCreateView,
     WineDetailView,
     WineListView,
-    WineUpdateView, WineScanView,
+    WineUpdateView, WineScanView, WineScannedView
 )
 
 urlpatterns = [
@@ -23,6 +23,7 @@ urlpatterns = [
     path("wine/edit/<int:pk>", WineUpdateView.as_view(), name="wine-edit"),
     path("wines/", WineListView.as_view(), name="wine-list"),
     path("wine/scan", WineScanView.as_view(), name="wine-scan"),
+    path("wine/scan/<int:code>", WineScannedView.as_view(), name="wine-scan"),
     path("", HomePageView.as_view(), name="homepage"),
 ]
 

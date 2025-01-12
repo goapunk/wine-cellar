@@ -254,3 +254,19 @@ class WineListView(FilterView):
 
 class WineScanView(TemplateView):
     template_name = "scan_wine.html"
+
+
+class WineScannedView(TemplateView):
+    template_name = "scanned_wine.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        code = self.kwargs["code"]
+        wine = Wine.objects.filter(barcode=code).first()
+        context.update(
+            {
+                "wine": wine,
+                "code": code
+            }
+        )
+        return context
