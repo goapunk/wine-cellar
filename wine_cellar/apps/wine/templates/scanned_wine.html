@@ -1,30 +1,46 @@
 {% extends 'base.html' %}
 {% load static i18n %}
 {% block header %}
-    <h1 class="wine-detail__name">{{ wine.name }}</h1>
-    <a class="wine-detail__edit" href="{% url 'wine-edit' wine.pk %}"><i class="fa-solid fa-pen-to-square"></i></a>
+    <h1 class="wine-detail__name">
+        {% if wine %}
+            {{ wine.name }}
+        {% else %}
+            {% translate 'No result' %}
+        {% endif %}
+    </h1>
 {% endblock header %}
 {% block content %}
     <div class="wine-scan__container">
         <div class="pure-g">
             <div class="pure-u-1 pure-u-md-1-1">
-                {% if wine.image %}
-                    <div class="wine-scan__image">
-                        <img src="{{ wine.image }}"
-                             height="225"
-                             width="auto"
-                             alt="{% translate 'Picture of a wine bottle' %}">
-                    </div>
+                {% if wine %}
+                    {% if wine.image %}
+                        <div class="wine-scan__image">
+                            <img src="{{ wine.image }}"
+                                 height="225"
+                                 width="auto"
+                                 alt="{% translate 'Picture of a wine bottle' %}">
+                        </div>
+                    {% else %}
+                        <div>{% translate "No image"}</div>
+                    {% endif %}
                 {% else %}
-                    <div>{% translate "No image"}</div>
+                    <p class="text-align-center">
+                        {% blocktranslate %}No wine found for barcode. Add a
+                    new one for this below.{% endblocktranslate %}
+                    </p>
                 {% endif %}
             </div>
-        </div>
-        <div class="pure-u-1 pure-u-md-1-1 text-align-center">
-            {% if wine.stock > 0 %}
-                <a href="{% url 'change-stock' wine.pk 0 %}" class="decrease">Remove from stock</a>
-            {% endif %}
-            <a href="{% url 'change-stock' wine.pk 1 %}" class="increase">Add to stock</a>
+            <div class="pure-u-1 pure-u-md-1-1 text-align-center">
+                {% if wine %}
+                    {% if wine.stock > 0 %}
+                        <a href="{% url 'change-stock' wine.pk 0 %}" class="decrease">Remove from stock</a>
+                    {% endif %}
+                    <a href="{% url 'change-stock' wine.pk 1 %}" class="increase">Add to stock</a>
+                {% else %}
+                    <a href="{% url 'wine-add' code %}" class="increase">Add new wine</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock content %}

@@ -1,9 +1,9 @@
-from backgroundremover import bg
+#from backgroundremover import bg
 from django.forms import model_to_dict
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, FormView, TemplateView
+from django.views.generic import DetailView, FormView, TemplateView, RedirectView
 from django_filters.views import FilterView
 
 from wine_cellar.apps.wine.filters import WineFilter
@@ -65,6 +65,8 @@ class WineCreateView(FormView):
         kwargs = super().get_form_kwargs()
         if "user" not in kwargs:
             kwargs["user"] = self.request.user
+        if "code" in self.kwargs:
+            kwargs["initial"].update({"barcode": self.kwargs["code"]})
         return kwargs
 
     def form_invalid(self, form):
@@ -101,6 +103,7 @@ class WineCreateView(FormView):
         remove_background = cleaned_data["remove_background"]
         image = cleaned_data["image"]
         name = cleaned_data["name"]
+        barcode = cleaned_data["barcode"]
         rating = cleaned_data["rating"]
         stock = cleaned_data["stock"]
         vintage = cleaned_data["vintage"]
@@ -112,6 +115,7 @@ class WineCreateView(FormView):
             category=category,
             country=country,
             name=name,
+            barcode=barcode,
             stock=stock if stock else 0,
             user=user,
             vintage=vintage,
@@ -186,6 +190,7 @@ class WineUpdateView(FormView):
         remove_background = cleaned_data["remove_background"]
         image = cleaned_data["image"]
         name = cleaned_data["name"]
+        barcode = cleaned_data["barcode"]
         rating = cleaned_data["rating"]
         stock = cleaned_data["stock"]
         vintage = cleaned_data["vintage"]
@@ -197,6 +202,7 @@ class WineUpdateView(FormView):
         wine.comment = comment
         wine.country = country
         wine.name = name
+        wine.barcode = barcode
         wine.rating = rating
         wine.stock = stock if stock else 0
         wine.vintage = vintage
@@ -217,22 +223,23 @@ class WineUpdateView(FormView):
                 image=image, wine=wine, user=user
             )
             if remove_background:
-                model_choices = ["u2net", "u2net_human_seg", "u2netp"]
-                f = open(wine_image.image.path, "rb")
-                data = f.read()
-                f.close()
-                img = bg.remove(
-                    data,
-                    model_name=model_choices[0],
-                    alpha_matting=True,
-                    alpha_matting_foreground_threshold=240,
-                    alpha_matting_background_threshold=10,
-                    alpha_matting_erode_structure_size=10,
-                    alpha_matting_base_size=1000,
-                )
-                f = open(wine_image.image.path, "wb")
-                f.write(img)
-                f.close()
+                pass
+                #model_choices = ["u2net", "u2net_human_seg", "u2netp"]
+                #f = open(wine_image.image.path, "rb")
+                #data = f.read()
+                #f.close()
+                #img = bg.remove(
+                #    data,
+                #    model_name=model_choices[0],
+                #    alpha_matting=True,
+                #    alpha_matting_foreground_threshold=240,
+                #    alpha_matting_background_threshold=10,
+                #    alpha_matting_erode_structure_size=10,
+                #    alpha_matting_base_size=1000,
+                #)
+                #f = open(wine_image.image.path, "wb")
+                #f.write(img)
+                #f.close()
 
 
 class WineDetailView(DetailView):
@@ -267,26 +274,42 @@ class WineScannedView(TemplateView):
         return context
 
 
-class WineChangeStockView(TemplateView):
-    template_name = "change_stock.html"
+#class WineChangeStockView(TemplateView):
+#    template_name = "change_stock.html"
+#
+#    def get(self, request, *args, **kwargs):
+#        # op = 0 decrease stock
+#        # op = 1 increaste stock
+#        pk = self.kwargs["pk"]
+#        operation = self.kwargs["op"]
+#        wine = get_object_or_404(Wine, pk=pk)
+#        if operation == 1:
+#            wine.stock += 1
+#        else:
+#            wine.stock -= 1
+#        wine.save()
+#        return super().get(request, *args, **kwargs)
+#
+#    def get_context_data(self, **kwargs):
+#        context = super().get_context_data(**kwargs)
+#        pk = self.kwargs["pk"]
+#        op = self.kwargs["op"]
+#        wine = get_object_or_404(Wine, pk=pk)
+#        context.update({"wine": wine, "op": op})
+#        return context
 
-    def get(self, request, *args, **kwargs):
-        # op = 0 decrease stock
-        # op = 1 increaste stock
-        pk = self.kwargs["pk"]
-        operation = self.kwargs["op"]
+class WineChangeStockView(RedirectView):
+    permanent = False
+    query_string = True
+    pattern_name = "wine-detail"
+
+    def get_redirect_url(self, *args, **kwargs):
+        pk = kwargs["pk"]
+        operation = kwargs.pop("op")
         wine = get_object_or_404(Wine, pk=pk)
         if operation == 1:
             wine.stock += 1
         else:
             wine.stock -= 1
         wine.save()
-        return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        pk = self.kwargs["pk"]
-        op = self.kwargs["op"]
-        wine = get_object_or_404(Wine, pk=pk)
-        context.update({"wine": wine, "op": op})
-        return context
+        return super().get_redirect_url(*args, **kwargs)
