@@ -5,7 +5,7 @@
     <script src="{% static 'tom_select.js' %}" type="module" defer></script>
 {% endblock extra_js %}
 {% block header %}
-    <h1 class="form-head">
+    <h1 class="header__title">
         {% translate 'Wine List' %}
     </h1>
 {% endblock header %}
@@ -13,7 +13,30 @@
     <div class="pure-g">
         <div class="pure-u-1 pure-u-sm-9-24 pure-u-md-7-24">
             {# TODO: extract form into own template and style #}
-            <form action="" method="get" class="filter-form pure-form pure-form-stacked">
+            <!-- Filter toggle -->
+            <div class="filter-form__sm-container">
+                <details>
+                    <summary>
+                        <h2 class="filter-form__header">Filter & Sorting</h2>
+                    </summary>
+                    <div>
+                        <form action="" method="get" class="filter-form pure-form pure-form-stacked">
+                            <fieldset>
+                                <legend class="filter-legend">
+                                        {% translate 'Narrow Your Selection' %}
+                                </legend>
+                                {% for field in filter.form %}
+                                    {% include "wine_filter_field.html" %}
+                                {% endfor %}
+                            </fieldset>
+                            <button type="submit" class="pure-button button__primary">{% translate "Filter" %}</button>
+                        </form>
+                    </div>
+                </details>
+            </div>
+            <!-- Filter toggle ends-->
+
+            <form action="" method="get" class="filter-form--lg pure-form pure-form-stacked">
                 <fieldset>
                     <div class="filter-legend">
                         <legend>
@@ -34,7 +57,7 @@
                 {% for wine in wines %}
                     <div class="wine_card">{% include 'wine_card.html' with wine=wine %}</div>
                 {% empty %}
-                    <div class="pure-u-1 center-container">
+                    <div class="pure-u-1 m-auto">
                         <p>
                             <strong>There are no wines yet</strong>
                         </p>
@@ -42,7 +65,7 @@
                 {% endfor %}
             </div>
             {% if page_obj.has_other_pages %}
-            <ul class="pagination center-container">
+            <ul class="pagination">
                 {% if page_obj.has_previous %}
                     <li>
                         <a href="?page={{ page_obj.previous_page_number }}">«</a>

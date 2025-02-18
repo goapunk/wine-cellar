@@ -1,15 +1,5 @@
-/* .pure-form input[type='submit'],
-.pure-form button[type='submit'] {
-  background-color: var(--dark-green);
-} */
-
-/* .pure-form input[type='submit']:hover,
-.pure-form button[type='submit']:hover {
-  background-color: var(--darker-green);
-} */
-
 .pure-form input[aria-invalid='true'] {
-  border-color: #bb0000;
+  border-color: var(--red);
 }
 
 .login-container {
@@ -23,24 +13,10 @@
     width: 100%;
     margin-bottom: 10px;
   }
-
-  /* .pure-form input[type='submit'] {
-    width: 100%;
-    color: var(--light);
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-  } */
 }
 
 .filter-legend {
   padding-right: 20px;
-}
-
-.form-head {
-  font-weight: 300;
-  margin: 20px 0 0 0;
-  color: var(--text-color-gray);
 }
 
 .form-subhead {
@@ -82,17 +58,17 @@
 }
 
 .form-container {
-  margin-bottom: 1em;
+  margin-bottom: 1rem;
 }
 
-.form-hint {
+p.form-hint {
   font-style: italic;
   color: var(--text-color-gray);
-  margin-bottom: 0.5 * 1rem;
+  margin: 0.25rem 0;
 }
 
 .ts-wrapper {
-  margin-top: 0.25em;
+  margin-top: 0.25rem;
 }
 
 .ts-control {
@@ -106,6 +82,7 @@
   padding-left: 1rem;
 }
 
+.filter-form--lg,
 .filter-form {
   input:not([type='checkbox']),
   select,
@@ -113,5 +90,63 @@
   .ts-control {
     width: calc(100% - 20px);
     min-height: 40px;
+  }
+}
+
+/* responsive styling for large and small filters */
+.filter-form--lg {
+  display: none;
+}
+
+.filter-form__sm-container {
+  details > summary {
+    list-style: none;
+  }
+ 
+  summary::-webkit-details-marker {
+    display: none
+  }
+ 
+  summary::before {
+    content: '  +';
+    font-size: 27px;
+    font-weight: 400;
+    vertical-align: baseline;
+  }
+
+  details[open] summary:before { 
+    content: "  –";
+    font-size: 27px;
+    font-weight: 400;
+    vertical-align: top;
+  }
+
+  .filter-form__header {
+    font-size: var(--font-md);
+    font-weight: 300;
+    display: inline;
+  }
+}
+
+@media screen and (min-width: 35.5em) {
+  .filter-form--lg {
+      display: block;
+  }
+  .filter-form__sm-container {
+      display: none;
+  }
+}
+
+.form__scanner {
+  width: 100%;
+  padding-top: 100%; /* 1:1 Aspect Ratio */
+  position: relative;
+
+  video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
   }
 }
