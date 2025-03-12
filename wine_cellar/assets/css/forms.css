@@ -145,28 +145,69 @@ p.form-hint {
   }
 }
 
-#swrap{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border: solid $b rgba(#000, .2);
-    &:before {
-    position: absolute;
-    z-index: -1;
-    /* go outside padding-box by 
-     * a border-width ($b) in every direction */
-    top: 1.5em; right: 1.5em; bottom: 1.5em; left: 1.5em;
-    border: inherit;
-    border-color: transparent;
-    background: inherit;
-    background-clip: border-box;
-    content: ''
-  }
 
+#swrap{
+    position: absolute;
+    width: 60%;
+    height: 15%;
+  left: 20%;
+  right: 20%;
+    top: 42.5%;
+    bottom: 42.5%px;
+    border: solid 2px #d00;
 }
+
+.overlay {
+        --border-style: 3px solid red;
+        --border-space: 20px;
+
+        position: absolute;
+        top: 37.5%;
+        left: 10%;
+        right: 10%;
+        bottom: 37.5%;
+  height:35%;
+  width: 80%;
+}
+    .overlay-helper {
+        position: relative;
+        width: 100%; /* make this element same size as the wrapper */
+        height: 100%;
+    }
+    .overlay-element {
+        position: absolute;
+        width: 15px; /* controls the length of the borders */
+        height: 15px;  /* controls the height of the borders */
+    }
+
+    .overlay .top-left {
+        border-left: var(--border-style);
+        border-top: var(--border-style);
+        top: var(--border-space);
+        left: var(--border-space);
+    }
+
+    .overlay .top-right {
+        border-right: var(--border-style);
+        border-top: var(--border-style);
+        top: var(--border-space);
+        right: var(--border-space);
+    }
+
+    .overlay .bottom-left {
+        border-left: var(--border-style);
+        border-bottom: var(--border-style);
+        bottom: var(--border-space);
+        left: var(--border-space);
+    
+    }
+
+    .overlay .bottom-right {
+        border-right: var(--border-style);
+        border-bottom: var(--border-style);
+        bottom: var(--border-space);
+        right: var(--border-space);
+    }
 
 .form__scanner {
   width: 100%;

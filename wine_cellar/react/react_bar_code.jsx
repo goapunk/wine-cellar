@@ -2,7 +2,13 @@ import React, {useState, useRef, useEffect} from 'react'
 import { createRoot } from 'react-dom/client'
 import { BarcodeScanner } from 'react-barcode-scanner'
 // import 'react-barcode-scanner/polyfill'
-import "barcode-detector/polyfill";
+// import "barcode-detector/polyfill";
+
+import {
+  BarcodeDetector,
+  ZXING_WASM_VERSION,
+  prepareZXingModule,
+} from "barcode-detector/ponyfill";
 
 const Scanner = () => {
   const [selectedFormat, setSelectedFormat] = useState('any'); // Declare a state variable...
@@ -22,11 +28,12 @@ const Scanner = () => {
       canvasRef.current.height = element.videoHeight
     }
        const context = canvasRef.current.getContext("2d");
-              context.clearRect(0, 0, canvas.width, canvas.height);
-              context.beginPath();
-              context.fillStyle = "red";
-              context.rect(barcode.boundingBox.x, barcode.boundingBox.y, barcode.boundingBox.width + 100, barcode.boundingBox.height + 100);
-              context.fill();
+              //context.clearRect(0, 0, canvas.width, canvas.height);
+              //context.beginPath();
+              //context.fillStyle = "rgba(0, 255, 0, 0.5)";
+              //context.rect(barcode.boundingBox.x, barcode.boundingBox.y, barcode.boundingBox.width, barcode.boundingBox.height);
+              //context.fill();
+              //setTimeout(() => {context.clearRect(0, 0, canvas.width, canvas.height)}, 1000);
               window.location.href = '/wine/scan/' + captured[0].rawValue
     }
   }
@@ -51,6 +58,12 @@ const Scanner = () => {
     <div id="scanner" className="form__scanner" ref={scannerRef} >
       <BarcodeScanner onCapture={handleCapture} options={{formats: selectedFormat ? [selectedFormat]: defaultFormats }} />
       <canvas id="canvas" ref={canvasRef} style={{position: "absolute", top:0, width:"100%", height: "100%"}} />
+   <div className="overlay">
+        <div className="overlay-element top-left" />
+        <div className="overlay-element top-right" />
+        <div className="overlay-element bottom-left" />
+        <div className="overlay-element bottom-right" />
+    </div>
     </div>
 </>
 
@@ -58,7 +71,20 @@ const Scanner = () => {
 }
 
 const initScanner = () => {
-  const root = createRoot(document.getElementById('scanner'))
+  const container = document.getElementById('scanner')
+  const root = createRoot(container)
+// Override the locateFile function
+prepareZXingModule({
+  overrides: {
+    locateFile: (path, prefix) => {
+      if (path.endsWith(".wasm")) {
+        return container.dataset.zxing_wasm_url;
+      }
+      return prefix + path;
+    },
+  },
+});
+  globalThis.BarcodeDetector ??= BarcodeDetector;
   root.render(<Scanner />)
 }
 
