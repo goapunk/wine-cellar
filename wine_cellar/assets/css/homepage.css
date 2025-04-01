@@ -5,6 +5,8 @@
   flex-wrap: wrap;
   gap: 20px;
   margin: 5px;
+
+  list-style: none;
 }
 
 .stats__card {
