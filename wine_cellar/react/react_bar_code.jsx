@@ -39,7 +39,9 @@ const Scanner = () => {
   }
 
   return (
-    <>    <div>
+    <>   
+ <div>
+<details><summary>Advanced</summary>
       <select
       value={selectedFormat}
       onChange={e => setSelectedFormat(e.target.value)} // ... and update the state variable on any change!
@@ -54,6 +56,7 @@ const Scanner = () => {
 			<option value="upc_a">UPC-A</option>
 			<option value="upc_e">UPC-E</option>
       </select>
+</details>
   </div>
     <div id="scanner" className="form__scanner" ref={scannerRef} >
       <BarcodeScanner onCapture={handleCapture} options={{formats: selectedFormat ? [selectedFormat]: defaultFormats }} />
